@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamsworks | Interactive Entertainment Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --neon-cyan: #00F0FF;
+            --neon-purple: #BC13FE;
+            --neon-green: #CCFF00;
+            --glass-bg: rgba(20, 20, 30, 0.7);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Custom Scrollbar Global */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-purple); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-cyan); 
+        }
+
+        /* Neon Text Effects */
+        .text-glow-cyan {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.7), 0 0 20px rgba(0, 240, 255, 0.5);
+        }
+        .text-glow-purple {
+            text-shadow: 0 0 10px rgba(188, 19, 254, 0.7), 0 0 20px rgba(188, 19, 254, 0.5);
+        }
+
+        /* Neon Box Effects */
+        .box-glow-cyan {
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3), inset 0 0 5px rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+        }
+        .box-glow-purple {
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.3), inset 0 0 5px rgba(188, 19, 254, 0.1);
+            border: 1px solid var(--neon-purple);
+        }
+
+        /* Hover Effects */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        /* Button Styles */
+        .btn-neon {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        .btn-neon:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+
+        .btn-ghost {
+            border: 1px solid var(--neon-purple);
+            color: var(--neon-purple);
+            clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 10% 100%, 0 70%);
+            transition: all 0.3s;
+        }
+        .btn-ghost:hover {
+            background: var(--neon-purple);
+            color: white;
+            box-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        /* Glitch Effect Animation */
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+        .glitch:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Fade In Animation */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, visibility;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+        
+        /* Step Transition */
+        .step-transition {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+        .step-hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: translateX(20px);
+        }
+        .step-active {
+            opacity: 1;
+            position: relative;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation (Aligned Right) -->
+    <nav class="fixed w-full z-50 border-b border-[#00F0FF]/30 bg-[#050505]/90 backdrop-blur-md">
+        <div class="w-full px-6 md:px-12">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo (Left) -->
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-3xl font-bold tracking-tighter cyber-font text-white">
+                        GAMS<span class="text-[#00F0FF] text-glow-cyan">WORKS</span>
+                    </a>
+                </div>
+
+                <!-- Nav Links & Button Group (Right) -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <div class="flex items-baseline space-x-8">
+                        <a href="#products" class="hover:text-[#00F0FF] transition-colors px-3 py-2 rounded-md text-lg font-medium">Products</a>
+                        <a href="#solutions" class="hover:text-[#BC13FE] transition-colors px-3 py-2 rounded-md text-lg font-medium">Solutions</a>
+                        <a href="#customization" class="hover:text-[#CCFF00] transition-colors px-3 py-2 rounded-md text-lg font-medium">Customization</a>
+                        <a href="#about" class="hover:text-white transition-colors text-gray-400 px-3 py-2 rounded-md text-lg font-medium">About</a>
+                    </div>
+                    <a href="#contact" class="btn-neon bg-transparent border border-[#00F0FF] text-[#00F0FF] px-6 py-2 font-bold tracking-widest uppercase ml-4">
+                        Contact Us
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button onclick="toggleMenu()" type="button" class="text-gray-400 hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="w-8 h-8"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black border-t border-gray-800">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center">
+                <a href="#products" class="text-gray-300 hover:text-[#00F0FF] block px-3 py-2 rounded-md text-base font-medium">Products</a>
+                <a href="#solutions" class="text-gray-300 hover:text-[#BC13FE] block px-3 py-2 rounded-md text-base font-medium">Solutions</a>
+                <a href="#customization" class="text-gray-300 hover:text-[#CCFF00] block px-3 py-2 rounded-md text-base font-medium">Customization</a>
+                <a href="#about" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About Us</a>
+                <a href="#contact" class="text-[#00F0FF] block px-3 py-2 rounded-md text-base font-medium">Contact Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. Homepage / Hero Section (Full Width / Tiled) -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden pt-20" style="background-image: url('image_3664a2.png'); background-size: cover; background-position: center;">
+        <!-- Background Overlay -->
+        <div class="absolute top-0 left-0 w-full h-full z-0 bg-black/70"></div>
+
+        <!-- Full Width Container for Hero Content -->
+        <div class="relative z-10 w-full px-4 text-center">
+            <h2 class="text-[#00F0FF] tracking-[0.5em] mb-6 text-sm md:text-xl uppercase font-bold animate-pulse">
+                Real-time · Interactive · Entertainment Engine
+            </h2>
+            
+            <!-- Updated Title: Defining the Next Generation of Live Entertainment -->
+            <h1 class="cyber-font text-4xl md:text-6xl lg:text-8xl font-black mb-8 leading-tight text-white glitch tracking-tight" title="Define Next-Gen">
+                Defining the Next Generation of<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-[#BC13FE]">Live Entertainment</span>
+            </h1>
+            
+            <!-- Updated Description Paragraph -->
+            <p class="mt-6 w-full max-w-6xl mx-auto text-xl md:text-2xl text-gray-300 font-light leading-relaxed">
+                Ready-to-Use Interactive Product Library + Custom Development Engine<br class="hidden md:block" />
+                Delivering real-time digital interaction solutions for malls, exhibitions, and brand events
+            </p>
+            
+            <div class="mt-12 flex justify-center gap-6">
+                <a href="#products" class="btn-neon bg-[#00F0FF] text-black px-10 py-5 text-xl font-bold shadow-[0_0_20px_#00F0FF] tracking-wider">
+                    Experience Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Products Section (Centered Layout) -->
+    <section id="products" class="py-24 bg-[#0A0A0F] relative">
+        <!-- Reverted to centered container -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-4xl md:text-5xl cyber-font font-bold mb-4 text-white">Product Matrix <span class="text-[#CCFF00]">/ MATRIX</span></h2>
+                <div class="flex justify-center gap-4 mt-6 flex-wrap">
+                    <span class="px-4 py-1 border border-[#00F0FF] text-[#00F0FF] rounded-full text-sm uppercase tracking-wider">H5 Light Interaction</span>
+                    <span class="px-4 py-1 border border-[#BC13FE] text-[#BC13FE] rounded-full text-sm uppercase tracking-wider">Big Screen Multiplayer Competition</span>
+                    <span class="px-4 py-1 border border-[#CCFF00] text-[#CCFF00] rounded-full text-sm uppercase tracking-wider">3D Immersive Experience</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product Card 1: Neon Racing -->
+                <div class="bg-[#050505] p-1 rounded-xl box-glow-cyan card-hover fade-in-section group cursor-pointer" onclick="openModal('racing')">
+                    <div class="h-48 bg-gray-900 rounded-t-lg relative overflow-hidden">
+                        <img src="https://placehold.co/600x400/050505/00F0FF?text=Neon+Racing" alt="Neon Racing Poster" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute top-2 right-2 bg-[#00F0FF] text-black text-xs font-bold px-2 py-1 rounded">Multiplayer Racing</div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-400 text-sm mb-4">Turn your phone into a controller, shake to steer, supporting thousands of players racing on the same screen</p>
+                        <ul class="text-gray-500 text-xs space-y-1">
+                            <li class="flex items-center"><i data-lucide="zap" class="w-3 h-3 mr-1 text-[#00F0FF]"></i> Zero-Latency Real-Time Sync</li>
+                            <li class="flex items-center"><i data-lucide="users" class="w-3 h-3 mr-1 text-[#00F0FF]"></i> Perfect for Auto Shows/Music Festivals</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Product Card 2: Cyber Trivia -->
+                <div class="bg-[#050505] p-1 rounded-xl box-glow-purple card-hover fade-in-section group cursor-pointer" onclick="openModal('trivia')">
+                    <div class="h-48 bg-gray-900 rounded-t-lg relative overflow-hidden">
+                        <img src="https://placehold.co/600x400/050505/BC13FE?text=Cyber+Trivia" alt="Cyber Trivia Poster" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute top-2 right-2 bg-[#BC13FE] text-white text-xs font-bold px-2 py-1 rounded">Trivia Quiz</div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-400 text-sm mb-4">Big screen questions, fast mobile answers, a battle of wits for the whole venue</p>
+                        <ul class="text-gray-500 text-xs space-y-1">
+                            <li class="flex items-center"><i data-lucide="zap" class="w-3 h-3 mr-1 text-[#BC13FE]"></i> Real-Time Leaderboard</li>
+                            <li class="flex items-center"><i data-lucide="users" class="w-3 h-3 mr-1 text-[#BC13FE]"></i> Ideal for Corporate Annual Meetings</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Product Card 3: Holo-Lottery -->
+                <div class="bg-[#050505] p-1 rounded-xl box-glow-cyan card-hover fade-in-section group cursor-pointer" onclick="openModal('lottery')">
+                    <div class="h-48 bg-gray-900 rounded-t-lg relative overflow-hidden">
+                        <img src="https://placehold.co/600x400/050505/CCFF00?text=Holo-Lottery" alt="Holo Lottery Poster" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute top-2 right-2 bg-[#CCFF00] text-black text-xs font-bold px-2 py-1 rounded">Lottery System</div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-400 text-sm mb-4">Cool 3D particle effect lottery, completely random, supports 3D avatar scrolling</p>
+                        <ul class="text-gray-500 text-xs space-y-1">
+                            <li class="flex items-center"><i data-lucide="zap" class="w-3 h-3 mr-1 text-[#CCFF00]"></i> Supports 3D Avatar Scrolling</li>
+                            <li class="flex items-center"><i data-lucide="users" class="w-3 h-3 mr-1 text-[#CCFF00]"></i> Suitable for Galas/Celebrations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Product Detail Modal -->
+    <div id="productModal" class="fixed inset-0 z-[100] hidden modal-overlay flex items-center justify-center p-4">
+        <div id="modalContainer" class="bg-[#0A0A0F] border border-[#00F0FF] max-w-3xl w-full rounded-lg shadow-2xl relative max-h-[90vh] overflow-y-auto transition-all duration-300">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-gray-300 z-10">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            
+            <div class="p-10">
+                <div>
+                    <h2 id="modalTitle" class="text-4xl cyber-font font-bold text-white mb-2">Product Name</h2>
+                    <p id="modalDesc" class="text-[#00F0FF] text-lg mb-8 font-light tracking-wide">Product Description...</p>
+                    
+                    <h4 id="modalGameplayTitle" class="text-white font-bold mb-4 border-l-4 border-[#00F0FF] pl-4 text-xl bg-gray-900/50 py-2">Core Gameplay</h4>
+                    <ol id="modalGameplayList" class="text-gray-300 text-sm mb-8 space-y-3 list-decimal list-inside pl-2">
+                        <!-- Dynamic Content -->
+                    </ol>
+
+                    <h4 id="modalTechTitle" class="text-white font-bold mb-4 border-l-4 border-[#00F0FF] pl-4 text-xl bg-gray-900/50 py-2">Technical Specs</h4>
+                    <div class="grid grid-cols-2 gap-6 text-sm text-gray-400 mb-4 border border-gray-800 p-4 rounded bg-gray-900/30">
+                        <div><span class="text-white font-semibold">Concurrency:</span> <span id="modalConcurrency">1-10,000 Users</span></div>
+                        <div><span class="text-white font-semibold">Latency:</span> < 50ms</div>
+                        <div><span class="text-white font-semibold">Devices:</span> Mobile + Big Screen</div>
+                        <div><span class="text-white font-semibold">Deployment:</span> Cloud / Local</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Solutions (Centered Layout) -->
+    <section id="solutions" class="py-24 bg-gradient-to-b from-[#0A0A0F] to-[#050505]">
+        <!-- Reverted to centered container -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl md:text-5xl cyber-font font-bold mb-12 text-center text-white">Scenario Solutions <span class="text-[#BC13FE]">/ SOLUTIONS</span></h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Solution 1 -->
+                <div class="border border-gray-800 p-8 hover:border-[#00F0FF] transition-colors group fade-in-section bg-[#0A0A0F]/50">
+                    <div class="w-12 h-12 bg-[#00F0FF]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#00F0FF] transition-colors">
+                        <i data-lucide="shopping-bag" class="text-[#00F0FF] group-hover:text-black"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Mall Traffic</h3>
+                    <p class="text-gray-400 text-sm">Atrium interactive screen, hourly shake-to-win lottery, increasing dwell time by 30%+</p>
+                </div>
+                <!-- Solution 2 -->
+                <div class="border border-gray-800 p-8 hover:border-[#BC13FE] transition-colors group fade-in-section bg-[#0A0A0F]/50">
+                    <div class="w-12 h-12 bg-[#BC13FE]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#BC13FE] transition-colors">
+                        <i data-lucide="coffee" class="text-[#BC13FE] group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Team Building</h3>
+                    <p class="text-gray-400 text-sm">Group battle games, bullet screen comments, instantly igniting the annual party atmosphere with full participation</p>
+                </div>
+                <!-- Solution 3 -->
+                <div class="border border-gray-800 p-8 hover:border-[#CCFF00] transition-colors group fade-in-section bg-[#0A0A0F]/50">
+                    <div class="w-12 h-12 bg-[#CCFF00]/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-[#CCFF00] transition-colors">
+                        <i data-lucide="presentation" class="text-[#CCFF00] group-hover:text-black"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Expo Attraction</h3>
+                    <p class="text-gray-400 text-sm">Customized brand trivia challenges, rapidly collecting lead information, gathering crowds at the booth</p>
+                </div>
+                <!-- Solution 4 -->
+                <div class="border border-gray-800 p-8 hover:border-white transition-colors group fade-in-section bg-[#0A0A0F]/50">
+                    <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-white transition-colors">
+                        <i data-lucide="video" class="text-white group-hover:text-black"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Livestream Interaction</h3>
+                    <p class="text-gray-400 text-sm">Virtual gifts trigger game effects, real-time bullet screen battles, improving viewer retention</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Customization (Vertical List Layout) -->
+    <section id="customization" class="py-24 relative bg-[#050505] overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#00F0FF]/20 to-transparent"></div>
+        
+        <!-- Centered Container -->
+        <div class="max-w-5xl mx-auto px-6 lg:px-8 relative z-10">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row items-end justify-between mb-16 border-b border-gray-900 pb-8">
+                <div>
+                    <h2 class="text-4xl md:text-5xl cyber-font font-bold text-white tracking-wide">
+                        Custom Development Lab
+                    </h2>
+                    <p class="text-[#00F0FF] text-xl cyber-font font-bold mt-2 tracking-wider">/ CUSTOM LAB</p>
+                </div>
+                <div class="mt-4 md:mt-0 font-mono text-sm text-gray-400">
+                    <span class="text-[#CCFF00]">UI Reskin</span> | <span class="text-[#BC13FE]">Gameplay Refactor</span> | <span class="text-[#00F0FF]">Hardware Integration</span>
+                </div>
+            </div>
+
+            <!-- Workflow List (Vertical Stack - NO Chevron Arrows) -->
+            <div class="flex flex-col space-y-4 fade-in-section mb-24">
+                <!-- Step 1 -->
+                <div class="group relative p-6 border border-gray-800 bg-[#080808] hover:bg-[#0A0A0A] hover:border-[#00F0FF] transition-all duration-300 flex items-center justify-between overflow-hidden rounded-r-xl">
+                    <div class="flex items-center gap-8 relative z-10">
+                        <div class="text-5xl font-bold text-gray-800 group-hover:text-[#00F0FF] transition-colors cyber-font w-16">01</div>
+                        <div class="border-l border-gray-800 pl-8 h-12 flex flex-col justify-center group-hover:border-[#00F0FF]/30 transition-colors">
+                            <h4 class="text-white font-bold text-xl group-hover:text-[#00F0FF] transition-colors">Analysis</h4>
+                            <p class="text-gray-500 text-sm group-hover:text-gray-400">Needs Diagnosis & Requirement Analysis</p>
+                        </div>
+                    </div>
+                    <!-- Hover Effect Bar -->
+                    <div class="absolute left-0 top-0 w-1 h-full bg-[#00F0FF] transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="group relative p-6 border border-gray-800 bg-[#080808] hover:bg-[#0A0A0A] hover:border-[#00F0FF] transition-all duration-300 flex items-center justify-between overflow-hidden rounded-r-xl">
+                    <div class="flex items-center gap-8 relative z-10">
+                        <div class="text-5xl font-bold text-gray-800 group-hover:text-[#00F0FF] transition-colors cyber-font w-16">02</div>
+                        <div class="border-l border-gray-800 pl-8 h-12 flex flex-col justify-center group-hover:border-[#00F0FF]/30 transition-colors">
+                            <h4 class="text-white font-bold text-xl group-hover:text-[#00F0FF] transition-colors">Design</h4>
+                            <p class="text-gray-500 text-sm group-hover:text-gray-400">Interaction Planning & UX Design</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 top-0 w-1 h-full bg-[#00F0FF] transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="group relative p-6 border border-gray-800 bg-[#080808] hover:bg-[#0A0A0A] hover:border-[#00F0FF] transition-all duration-300 flex items-center justify-between overflow-hidden rounded-r-xl">
+                    <div class="flex items-center gap-8 relative z-10">
+                        <div class="text-5xl font-bold text-gray-800 group-hover:text-[#00F0FF] transition-colors cyber-font w-16">03</div>
+                        <div class="border-l border-gray-800 pl-8 h-12 flex flex-col justify-center group-hover:border-[#00F0FF]/30 transition-colors">
+                            <h4 class="text-white font-bold text-xl group-hover:text-[#00F0FF] transition-colors">Art</h4>
+                            <p class="text-gray-500 text-sm group-hover:text-gray-400">Visual Setting & 3D Modeling</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 top-0 w-1 h-full bg-[#00F0FF] transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="group relative p-6 border border-gray-800 bg-[#080808] hover:bg-[#0A0A0A] hover:border-[#00F0FF] transition-all duration-300 flex items-center justify-between overflow-hidden rounded-r-xl">
+                    <div class="flex items-center gap-8 relative z-10">
+                        <div class="text-5xl font-bold text-gray-800 group-hover:text-[#00F0FF] transition-colors cyber-font w-16">04</div>
+                        <div class="border-l border-gray-800 pl-8 h-12 flex flex-col justify-center group-hover:border-[#00F0FF]/30 transition-colors">
+                            <h4 class="text-white font-bold text-xl group-hover:text-[#00F0FF] transition-colors">Dev</h4>
+                            <p class="text-gray-500 text-sm group-hover:text-gray-400">Core Development & Logic Coding</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 top-0 w-1 h-full bg-[#00F0FF] transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="group relative p-6 border border-gray-800 bg-[#080808] hover:bg-[#0A0A0A] hover:border-[#00F0FF] transition-all duration-300 flex items-center justify-between overflow-hidden rounded-r-xl">
+                    <div class="flex items-center gap-8 relative z-10">
+                        <div class="text-5xl font-bold text-gray-800 group-hover:text-[#00F0FF] transition-colors cyber-font w-16">05</div>
+                        <div class="border-l border-gray-800 pl-8 h-12 flex flex-col justify-center group-hover:border-[#00F0FF]/30 transition-colors">
+                            <h4 class="text-white font-bold text-xl group-hover:text-[#00F0FF] transition-colors">Test</h4>
+                            <p class="text-gray-500 text-sm group-hover:text-gray-400">Stress Testing & QA</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 top-0 w-1 h-full bg-[#00F0FF] transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="group relative p-6 border border-gray-800 bg-[#080808] hover:bg-[#0A0A0A] hover:border-[#00F0FF] transition-all duration-300 flex items-center justify-between overflow-hidden rounded-r-xl">
+                    <div class="flex items-center gap-8 relative z-10">
+                        <div class="text-5xl font-bold text-gray-800 group-hover:text-[#00F0FF] transition-colors cyber-font w-16">06</div>
+                        <div class="border-l border-gray-800 pl-8 h-12 flex flex-col justify-center group-hover:border-[#00F0FF]/30 transition-colors">
+                            <h4 class="text-white font-bold text-xl group-hover:text-[#00F0FF] transition-colors">Deploy</h4>
+                            <p class="text-gray-500 text-sm group-hover:text-gray-400">Deployment Delivery & Support</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 top-0 w-1 h-full bg-[#00F0FF] transform scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Technology Stack (Centered Layout - Restored) -->
+    <section class="py-16 bg-[#080808]">
+        <!-- Reverted to centered container -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+                <div class="p-4 fade-in-section group">
+                    <h3 class="text-xl font-bold text-white mb-2 cyber-font">WebGL / Unity</h3>
+                    <p class="text-xs text-gray-500 mb-4">Cinema-grade 3D Visual Rendering</p>
+                    <div class="h-1 w-12 bg-[#00F0FF] mx-auto rounded-full shadow-[0_0_10px_#00F0FF] group-hover:w-20 transition-all duration-300"></div>
+                </div>
+                <div class="p-4 fade-in-section group">
+                    <h3 class="text-xl font-bold text-white mb-2 cyber-font">WebSocket</h3>
+                    <p class="text-xs text-gray-500 mb-4">Millisecond Real-time Bi-directional Communication</p>
+                    <div class="h-1 w-12 bg-[#BC13FE] mx-auto rounded-full shadow-[0_0_10px_#BC13FE] group-hover:w-20 transition-all duration-300"></div>
+                </div>
+                <div class="p-4 fade-in-section group">
+                    <h3 class="text-xl font-bold text-white mb-2 cyber-font">Node.js Cluster</h3>
+                    <p class="text-xs text-gray-500 mb-4">10k+ Concurrency High-Availability Architecture</p>
+                    <div class="h-1 w-12 bg-[#CCFF00] mx-auto rounded-full shadow-[0_0_10px_#CCFF00] group-hover:w-20 transition-all duration-300"></div>
+                </div>
+                <div class="p-4 fade-in-section group">
+                    <h3 class="text-xl font-bold text-white mb-2 cyber-font">Cross-Platform</h3>
+                    <p class="text-xs text-gray-500 mb-4">iOS / Android / HarmonyOS</p>
+                    <div class="h-1 w-12 bg-white mx-auto rounded-full shadow-[0_0_10px_white] group-hover:w-20 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. FAQ (Centered Layout) -->
+    <section class="py-24 max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl cyber-font font-bold text-center mb-12">Frequently Asked Questions <span class="text-gray-600">/ FAQ</span></h2>
+        
+        <!-- Reverted to single column stack since container is narrow -->
+        <div class="space-y-4 fade-in-section">
+            <!-- FAQ Item 1 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: What are the on-site network requirements for interactive games?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    We recommend using an independent 5G/4G router or a dedicated line, ensuring 20–50ms latency. We also provide latency optimization solutions.
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: What is the maximum number of simultaneous players supported?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    A single scenario supports 10,000+ real-time interactions; typically 50–2,000 people for corporate events are easily handled.
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: Is an App download required?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    No. All interactions are accessible via mobile browser/H5 by scanning a QR code.
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: What are the requirements for big screens and AV equipment?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    Supports 1080P–4K big screen output; a standard PC can run it, and local deployment is available.
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Items Container (Stacked) -->
+        <div id="more-faq" class="hidden space-y-4 mt-4">
+            <!-- FAQ Item 5 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: Is brand customization and theme reskinning supported?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    Yes. All games can be themed according to brand visuals, and gameplay can be deeply customized.
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: Can you provide on-site assistance?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    Yes. We can send technicians for on-site execution or monitor remotely in real-time to ensure smooth operation.
+                </div>
+            </div>
+
+            <!-- FAQ Item 7 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: What is the licensing model? Rental or Buyout?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    We offer four models: short-term rental, long-term licensing, buyout, and custom development, selectable based on your needs.
+                </div>
+            </div>
+
+            <!-- FAQ Item 8 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: Can interactive games integrate lottery, registration, points, etc.?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    Yes. We can combine quizzes, lotteries, check-ins, and data collection into a complete event flow.
+                </div>
+            </div>
+
+            <!-- FAQ Item 9 -->
+            <div class="border border-gray-800 rounded bg-[#0A0A0F]">
+                <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                    <span class="font-bold text-white">Q: How long does a custom project take?</span>
+                    <i data-lucide="chevron-down" class="text-[#00F0FF] transform transition-transform shrink-0 ml-2"></i>
+                </button>
+                <div class="hidden px-6 pb-4 text-gray-400 text-sm">
+                    Simple reskinning 1–3 days, light customization 3–7 days, deep customization depends on requirements.
+                </div>
+            </div>
+        </div>
+
+        <!-- Show More Button -->
+        <div class="text-center mt-12">
+            <button id="faq-toggle-btn" onclick="toggleMoreFaq()" class="text-[#00F0FF] hover:text-white flex items-center justify-center mx-auto transition-colors group">
+                <span id="faq-btn-text" class="font-bold">Show More</span>
+                <i id="faq-btn-icon" data-lucide="chevron-down" class="ml-2 w-5 h-5 transition-transform duration-300"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- 8. About Us / What Powers GAMSWORKS (Consolidated & Redesigned) -->
+    <section id="about" class="py-24 relative overflow-hidden bg-gradient-to-b from-[#050505] to-[#0A0A0F]">
+        <!-- Background Grid & Particles -->
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(0,240,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-30 pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-[#BC13FE] opacity-5 blur-[150px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-[#00F0FF] opacity-5 blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            
+            <!-- Vision: Center Statement (Added Back) -->
+            <div class="text-center py-16 mb-20 border-y border-gray-800 bg-[#050505]/50 fade-in-section relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#00F0FF]/5 to-transparent"></div>
+                <i data-lucide="sparkles" class="w-12 h-12 text-[#CCFF00] mx-auto mb-4 animate-pulse relative z-10"></i>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 relative z-10 leading-snug">
+                    "Make every offline event a digital entertainment scene that is <br class="hidden md:block" />
+                    <span class="text-[#00F0FF] text-glow-cyan">Interactive</span>, <span class="text-[#BC13FE] text-glow-purple">Participatory</span>, and <span class="text-[#CCFF00]">Memorable</span>"
+                </h2>
+                <p class="text-gray-500 uppercase tracking-[0.2em] text-xs md:text-sm relative z-10 mt-6">
+                    Vision: Transform Passive Viewing into Active Participation
+                </p>
+            </div>
+
+            <!-- Section Header: What Powers GAMSWORKS -->
+            <div class="w-full mb-12 fade-in-section text-center">
+                <h2 class="text-4xl md:text-5xl cyber-font font-bold mb-6 text-white">
+                    What Powers <span class="text-[#00F0FF]">GAMSWORKS</span>
+                </h2>
+                <p class="text-gray-400 text-lg max-w-3xl mx-auto">
+                    Forging the next generation of live entertainment with our core interactive engine
+                </p>
+            </div>
+
+            <!-- 6-Grid Layout (3 Columns x 2 Rows) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in-section">
+                
+                <!-- Item 01 -->
+                <div class="bg-[#0A0A0F] p-8 rounded-lg border border-gray-800 hover:border-[#00F0FF] transition-all duration-300 group h-full relative overflow-hidden hover:shadow-[0_0_30px_rgba(0,240,255,0.1)]">
+                    <!-- Corner Accent -->
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#00F0FF]/10 to-transparent rounded-bl-3xl transition-all group-hover:w-24 group-hover:h-24"></div>
+                    
+                    <div class="text-[#00F0FF] text-5xl font-bold mb-6 cyber-font opacity-40 group-hover:opacity-100 transition-opacity translate-y-0 group-hover:-translate-y-1 duration-300">01</div>
+                    
+                    <h4 class="text-white font-bold text-xl mb-4 group-hover:text-[#00F0FF] transition-colors tracking-wide">
+                        Plug & Play Product Library
+                    </h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Ready-made racing, trivia, lottery, and battle experiences designed for malls, launches, expos, and offline events.
+                    </p>
+                </div>
+
+                <!-- Item 02 -->
+                <div class="bg-[#0A0A0F] p-8 rounded-lg border border-gray-800 hover:border-[#BC13FE] transition-all duration-300 group h-full relative overflow-hidden hover:shadow-[0_0_30px_rgba(188,19,254,0.1)]">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#BC13FE]/10 to-transparent rounded-bl-3xl transition-all group-hover:w-24 group-hover:h-24"></div>
+                    
+                    <div class="text-[#BC13FE] text-5xl font-bold mb-6 cyber-font opacity-40 group-hover:opacity-100 transition-opacity translate-y-0 group-hover:-translate-y-1 duration-300">02</div>
+                    
+                    <h4 class="text-white font-bold text-xl mb-4 group-hover:text-[#BC13FE] transition-colors tracking-wide">
+                        Multi-Terminal Real-Time Sync
+                    </h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Big screen × mobile × on-site hardware — millisecond-level synchronization enabling everyone to truly interact on the same frequency.
+                    </p>
+                </div>
+
+                <!-- Item 03 -->
+                <div class="bg-[#0A0A0F] p-8 rounded-lg border border-gray-800 hover:border-[#CCFF00] transition-all duration-300 group h-full relative overflow-hidden hover:shadow-[0_0_30px_rgba(204,255,0,0.1)]">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#CCFF00]/10 to-transparent rounded-bl-3xl transition-all group-hover:w-24 group-hover:h-24"></div>
+                    
+                    <div class="text-[#CCFF00] text-5xl font-bold mb-6 cyber-font opacity-40 group-hover:opacity-100 transition-opacity translate-y-0 group-hover:-translate-y-1 duration-300">03</div>
+                    
+                    <h4 class="text-white font-bold text-xl mb-4 group-hover:text-[#CCFF00] transition-colors tracking-wide">
+                        Full-Process Custom Development
+                    </h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        From gameplay design, visual production, and network architecture to testing and deployment — delivering exclusive interactive experiences.
+                    </p>
+                </div>
+
+                <!-- Item 04 -->
+                <div class="bg-[#0A0A0F] p-8 rounded-lg border border-gray-800 hover:border-[#00F0FF] transition-all duration-300 group h-full relative overflow-hidden hover:shadow-[0_0_30px_rgba(0,240,255,0.1)]">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#00F0FF]/10 to-transparent rounded-bl-3xl transition-all group-hover:w-24 group-hover:h-24"></div>
+                    
+                    <div class="text-[#00F0FF] text-5xl font-bold mb-6 cyber-font opacity-40 group-hover:opacity-100 transition-opacity translate-y-0 group-hover:-translate-y-1 duration-300">04</div>
+                    
+                    <h4 class="text-white font-bold text-xl mb-4 group-hover:text-[#00F0FF] transition-colors tracking-wide">
+                        Real-Time Performance Engine
+                    </h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        0–50ms ultra-low latency and 10k+ concurrency powered by our self-developed framework.
+                    </p>
+                </div>
+
+                <!-- Item 05 -->
+                <div class="bg-[#0A0A0F] p-8 rounded-lg border border-gray-800 hover:border-[#BC13FE] transition-all duration-300 group h-full relative overflow-hidden hover:shadow-[0_0_30px_rgba(188,19,254,0.1)]">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#BC13FE]/10 to-transparent rounded-bl-3xl transition-all group-hover:w-24 group-hover:h-24"></div>
+                    
+                    <div class="text-[#BC13FE] text-5xl font-bold mb-6 cyber-font opacity-40 group-hover:opacity-100 transition-opacity translate-y-0 group-hover:-translate-y-1 duration-300">05</div>
+                    
+                    <h4 class="text-white font-bold text-xl mb-4 group-hover:text-[#BC13FE] transition-colors tracking-wide">
+                        Reliable Event Delivery
+                    </h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Event-grade architecture, monitoring, and multi-layer backups secure mission-critical scenarios.
+                    </p>
+                </div>
+
+                <!-- Item 06 -->
+                <div class="bg-[#0A0A0F] p-8 rounded-lg border border-gray-800 hover:border-[#CCFF00] transition-all duration-300 group h-full relative overflow-hidden hover:shadow-[0_0_30px_rgba(204,255,0,0.1)]">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#CCFF00]/10 to-transparent rounded-bl-3xl transition-all group-hover:w-24 group-hover:h-24"></div>
+                    
+                    <div class="text-[#CCFF00] text-5xl font-bold mb-6 cyber-font opacity-40 group-hover:opacity-100 transition-opacity translate-y-0 group-hover:-translate-y-1 duration-300">06</div>
+                    
+                    <h4 class="text-white font-bold text-xl mb-4 group-hover:text-[#CCFF00] transition-colors tracking-wide">
+                        Modular Expansion & Visual System
+                    </h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Fast reskin, flexible customization, and a unified cyberpunk visual identity that elevates any venue.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Contact & Footer (Multi-step Form) -->
+    <section id="contact" class="pt-24 pb-10 bg-black relative border-t border-gray-900 min-h-[800px] flex flex-col justify-center">
+        <!-- Background Glow -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#00F0FF]/5 to-transparent pointer-events-none"></div>
+
+        <div class="max-w-2xl mx-auto px-4 w-full relative z-10 text-center">
+            
+            <!-- Title Area -->
+            <div class="mb-12 fade-in-section">
+                <h2 class="text-4xl md:text-5xl cyber-font font-bold mb-2 text-white">
+                    Initiate Project <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-[#BC13FE]">INITIATE PROJECT</span>
+                </h2>
+                <p class="text-gray-400 text-lg">Register your mission, and we will dispatch the appropriate engineers.</p>
+            </div>
+
+            <!-- Multi-step Form Container -->
+            <div class="bg-[#0A0A0F] border border-gray-800 rounded-xl p-8 md:p-12 box-glow-cyan fade-in-section relative overflow-hidden min-h-[300px] flex items-center justify-center">
+                
+                <form id="missionForm" onsubmit="event.preventDefault();" class="w-full">
+                    
+                    <!-- Step 1 -->
+                    <div id="step-1" class="step-transition step-active w-full">
+                        <label class="block text-[#00F0FF] text-xl font-bold mb-4">What is your codename?</label>
+                        <input type="text" id="codename" class="w-full bg-[#050505] border border-gray-700 text-white p-4 text-lg focus:outline-none focus:border-[#00F0FF] transition-colors rounded mb-8 text-center" placeholder="Enter your codename">
+                        <button type="button" onclick="nextStep(1)" class="btn-neon bg-transparent border border-[#00F0FF] text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black px-8 py-3 font-bold uppercase tracking-widest inline-flex items-center group">
+                            NEXT STEP 
+                            <i data-lucide="arrow-right" class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div id="step-2" class="step-transition step-hidden w-full">
+                        <label class="block text-[#BC13FE] text-xl font-bold mb-4">How can we reach you?</label>
+                        <input type="text" id="contactInfo" class="w-full bg-[#050505] border border-gray-700 text-white p-4 text-lg focus:outline-none focus:border-[#BC13FE] transition-colors rounded mb-8 text-center" placeholder="Phone / Email / WeChat">
+                        <div class="flex justify-center gap-4">
+                            <button type="button" onclick="prevStep(2)" class="text-gray-500 hover:text-white px-4 py-3 text-sm">
+                                BACK
+                            </button>
+                            <button type="button" onclick="nextStep(2)" class="btn-neon bg-transparent border border-[#BC13FE] text-[#BC13FE] hover:bg-[#BC13FE] hover:text-white px-8 py-3 font-bold uppercase tracking-widest inline-flex items-center group">
+                                NEXT STEP
+                                <i data-lucide="arrow-right" class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div id="step-3" class="step-transition step-hidden w-full">
+                        <label class="block text-[#CCFF00] text-xl font-bold mb-4">What is your mission content?</label>
+                        <textarea id="missionDesc" class="w-full bg-[#050505] border border-gray-700 text-white p-4 text-lg focus:outline-none focus:border-[#CCFF00] transition-colors rounded mb-8 h-32 resize-none" placeholder="Describe your mission"></textarea>
+                        <div class="flex justify-center gap-4">
+                            <button type="button" onclick="prevStep(3)" class="text-gray-500 hover:text-white px-4 py-3 text-sm">
+                                BACK
+                            </button>
+                            <button type="submit" onclick="submitForm()" class="btn-neon bg-[#CCFF00] text-black hover:bg-white px-8 py-3 font-bold uppercase tracking-widest inline-flex items-center shadow-[0_0_20px_#CCFF00]">
+                                SEND SIGNAL
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="success-message" class="step-transition step-hidden w-full text-center">
+                        <i data-lucide="check-circle" class="w-16 h-16 text-[#00F0FF] mx-auto mb-4 animate-bounce"></i>
+                        <h3 class="text-2xl font-bold text-white mb-2">SIGNAL RECEIVED</h3>
+                        <p class="text-gray-400">Our agents will establish a secure connection with you shortly.</p>
+                        <button type="button" onclick="resetForm()" class="mt-8 text-gray-500 hover:text-white text-sm underline">
+                            Send New Signal
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Footer Hint -->
+            <div class="mt-8 text-gray-500 text-xs tracking-[0.2em] font-mono flex items-center justify-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                Signal Encrypted · Encryption Enabled
+            </div>
+        </div>
+
+        <div class="text-center mt-20 text-gray-600 text-xs">
+            <p>&copy; 2025 GAMS NETWORKS LIMITED. All Systems Operational.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#020202] border-t border-[#00F0FF]/20 py-16 relative overflow-hidden">
+        <!-- Decorative Grid Background for Footer -->
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(0,240,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,240,255,0.02)_1px,transparent_1px)] bg-[size:20px_20px] opacity-20 pointer-events-none"></div>
+
+        <div class="w-full px-6 md:px-12 relative z-10 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+            
+            <!-- Company Info & Intro -->
+            <div>
+                <a href="#" class="text-3xl font-bold tracking-tighter cyber-font text-white block mb-3">
+                    GAMS<span class="text-[#00F0FF] text-glow-cyan">WORKS</span>
+                </a>
+                <p class="text-gray-500 text-sm max-w-md leading-relaxed">
+                    GAMSWORKS creates experiences that spark curiosity, inspire playfulness, and connect people through imagination
+                </p>
+            </div>
+
+            <!-- Copyright & Status -->
+            <div class="flex flex-col items-center md:items-end">
+                <!-- Contact Added Here -->
+                <div class="mb-6 text-center md:text-right">
+                    <!-- Reduced font size for CONTACT US label -->
+                    <p class="text-gray-500 text-[10px] mb-1 tracking-widest">CONTACT US</p>
+                    <!-- Reduced font size for email address -->
+                    <span class="text-lg font-bold text-white hover:text-[#00F0FF] transition-colors cyber-font cursor-default">solutions@gamsworks.com</span>
+                </div>
+
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-2 h-2 rounded-full bg-[#00F0FF] shadow-[0_0_10px_#00F0FF]"></div>
+                    <span class="text-[#00F0FF] text-xs font-bold tracking-widest uppercase">System Online</span>
+                </div>
+                <p class="text-gray-600 text-xs">&copy; 2025 GAMS NETWORKS LIMITED.</p>
+                <p class="text-gray-700 text-[10px] mt-1">All Rights Reserved.</p>
+                <!-- Privacy Policy added here -->
+                <div class="mt-4">
+                    <button onclick="openPrivacyModal()" class="px-10 py-4 border-2 border-[#BC13FE] text-[#BC13FE] hover:bg-[#BC13FE] hover:text-white transition-all rounded text-lg font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(188,19,254,0.3)]">
+                        Privacy Policy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="fixed inset-0 z-[110] hidden modal-overlay flex items-center justify-center p-4">
+        <div class="bg-[#0A0A0F] border border-[#BC13FE] max-w-4xl w-full rounded-lg shadow-[0_0_50px_rgba(188,19,254,0.2)] relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closePrivacyModal()" class="absolute top-4 right-4 text-white hover:text-[#BC13FE] transition-colors">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            
+            <div class="p-8 md:p-12 text-gray-300">
+                <h2 class="text-3xl cyber-font font-bold text-white mb-2">Privacy Policy</h2>
+                <p class="text-sm text-[#BC13FE] mb-8">Last Updated: November 2025</p>
+                
+                <div class="space-y-6 text-sm leading-relaxed">
+                    <p>Welcome to <strong>GAMSWORKS</strong> ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our interactive entertainment services, websites, and products (collectively, the "Services").</p>
+
+                    <h3 class="text-xl font-bold text-white mt-6 mb-3">1. Information We Collect</h3>
+                    <p>We collect information to provide better services to all our users. The types of information we collect include:</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Usage Data:</strong> Information about how you interact with our games and services, including game scores, interaction times, and device types.</li>
+                        <li><strong>Device Information:</strong> We may collect information about the device you use to access our services, such as the hardware model, operating system version, and unique device identifiers.</li>
+                        <li><strong>Contact Information:</strong> If you contact us directly (e.g., via our "Initiate Project" form), we collect your name, email address, phone number, and any other information you choose to provide.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-bold text-white mt-6 mb-3">2. How We Use Your Information</h3>
+                    <p>We use the information we collect for various purposes, including:</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>To provide and maintain our Service, including real-time game synchronization.</li>
+                        <li>To notify you about changes to our Service.</li>
+                        <li>To allow you to participate in interactive features of our Service when you choose to do so.</li>
+                        <li>To provide customer support and respond to your inquiries.</li>
+                        <li>To monitor the usage of our Service and detect, prevent, and address technical issues.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-bold text-white mt-6 mb-3">3. Data Sharing and Disclosure</h3>
+                    <p>We do not sell your personal data. We may share your information in the following situations:</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>With Service Providers:</strong> We may share data with third-party vendors who perform services on our behalf (e.g., cloud hosting, analytics).</li>
+                        <li><strong>For Legal Reasons:</strong> We will share personal information if required by law or if we believe that disclosure is necessary to protect our rights and/or comply with a judicial proceeding, court order, or legal process.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-bold text-white mt-6 mb-3">4. Data Security</h3>
+                    <p>The security of your data is important to us. We use commercially reasonable methods, including encryption and secure protocols (WebSocket/HTTPS), to protect your personal information. However, no method of transmission over the Internet or method of electronic storage is 100% secure.</p>
+
+                    <h3 class="text-xl font-bold text-white mt-6 mb-3">5. Third-Party Links</h3>
+                    <p>Our Service may contain links to other sites that are not operated by us. If you click on a third-party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit.</p>
+
+                    <h3 class="text-xl font-bold text-white mt-6 mb-3">6. Changes to This Privacy Policy</h3>
+                    <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.</p>
+
+                    <h3 class="text-xl font-bold text-white mt-6 mb-3">7. Contact Us</h3>
+                    <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+                    <p class="text-[#BC13FE] font-bold mt-2">solutions@gamsworks.com</p>
+                </div>
+                
+                <div class="mt-10 pt-6 border-t border-gray-800 text-center">
+                    <button onclick="closePrivacyModal()" class="btn-neon bg-[#BC13FE] text-white px-8 py-2 font-bold uppercase tracking-widest text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Color definitions for matching products
+        const productColors = {
+            'racing': '#00F0FF', // Cyan
+            'trivia': '#BC13FE', // Purple
+            'lottery': '#CCFF00' // Acid Green
+        };
+
+        // Modal Logic
+        function openModal(productType) {
+            const modal = document.getElementById('productModal');
+            const modalContainer = document.getElementById('modalContainer');
+            
+            const title = document.getElementById('modalTitle');
+            const desc = document.getElementById('modalDesc');
+            const gameplayTitle = document.getElementById('modalGameplayTitle');
+            const techTitle = document.getElementById('modalTechTitle');
+            const gameplayList = document.getElementById('modalGameplayList');
+            const concurrencyValue = document.getElementById('modalConcurrency'); // Get the span element
+            
+            // Define Colors based on selection (fallback to cyan)
+            const activeColor = productColors[productType] || '#00F0FF';
+
+            // Mock Data
+            const data = {
+                'racing': { 
+                    title: 'Neon Racing', 
+                    desc: 'Turn your phone into a controller, shake to steer, supporting thousands of players racing on the same screen',
+                    concurrency: '20–200 Players Real-Time Racing', // Specific Concurrency
+                    gameplay: [
+                        'Users scan the code to join the lobby, phone becomes a motion controller.',
+                        'Shake phone to accelerate, drift, and steer left/right.',
+                        'Big screen displays all players\' positions and race status in real-time.',
+                        'Race ends with auto-generated rankings, leaderboard, and best play replays.'
+                    ]
+                },
+                'trivia': { 
+                    title: 'Cyber Trivia', 
+                    desc: 'Big screen knowledge competition, fast answers, real-time points leaderboard.',
+                    concurrency: '50–500 Players Trivia Interaction', // Specific Concurrency
+                    gameplay: [
+                        'Big screen displays question, players scan code to enter answering interface.',
+                        'Phone shows A/B/C/D options, players rush to answer within time limit.',
+                        'Big screen shows participant count, accuracy, and score changes in real-time.',
+                        'Leaderboard and winners displayed automatically after the round.'
+                    ]
+                },
+                'lottery': { 
+                    title: 'Holo-Lottery', 
+                    desc: 'Cool 3D particle effect lottery system, completely random, supports 3D avatar scrolling.',
+                    concurrency: '100–2,000 Players Lottery Participation', // Specific Concurrency
+                    gameplay: [
+                        'Players scan code to register info or shake to participate.',
+                        'Big screen launches 3D holographic animation (Particle Sphere / Wheel / Burst).',
+                        'System randomly draws winners and displays avatar or nickname on big screen.',
+                        'Configurable rounds, probabilities, prize pool, and brand visual themes.'
+                    ]
+                }
+            };
+
+            if(data[productType]) {
+                // Set Text Content
+                title.innerText = data[productType].title;
+                desc.innerText = data[productType].desc;
+                
+                // Set Concurrency
+                if (concurrencyValue) {
+                    concurrencyValue.innerText = data[productType].concurrency;
+                }
+                
+                // Clear existing gameplay items
+                gameplayList.innerHTML = '';
+                
+                // Add new gameplay items
+                if (data[productType].gameplay) {
+                    data[productType].gameplay.forEach(step => {
+                        const li = document.createElement('li');
+                        li.innerText = step;
+                        gameplayList.appendChild(li);
+                    });
+                }
+                
+                // --- DYNAMIC STYLING ---
+                // 1. Border Color & Shadow
+                modalContainer.style.borderColor = activeColor;
+                modalContainer.style.boxShadow = `0 0 50px ${activeColor}33`; // 33 is hex for ~20% opacity
+
+                // 2. Description Text Color
+                desc.style.color = activeColor;
+
+                // 3. Sub-headers borders
+                gameplayTitle.style.borderColor = activeColor;
+                techTitle.style.borderColor = activeColor;
+
+                // Show Modal
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; 
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('productModal');
+            const privacyModal = document.getElementById('privacyModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+            if (event.target == privacyModal) {
+                closePrivacyModal();
+            }
+        }
+
+        // FAQ Accordion Logic
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            // Lucide replaces <i> with <svg>, so we look for svg first, falling back to i if not yet replaced (though script runs at end)
+            const icon = button.querySelector('svg') || button.querySelector('i');
+            
+            content.classList.toggle('hidden');
+            if (icon) {
+                if (content.classList.contains('hidden')) {
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            }
+        }
+
+        // Toggle More FAQ Items
+        function toggleMoreFaq() {
+            const moreFaq = document.getElementById('more-faq');
+            const btnText = document.getElementById('faq-btn-text');
+            // Find icon either as svg (if replaced) or i
+            const btn = document.getElementById('faq-toggle-btn');
+            const btnIcon = btn.querySelector('svg') || btn.querySelector('i');
+
+            moreFaq.classList.toggle('hidden');
+
+            if (moreFaq.classList.contains('hidden')) {
+                btnText.innerText = 'Show More';
+                if(btnIcon) btnIcon.style.transform = 'rotate(0deg)';
+            } else {
+                btnText.innerText = 'Show Less';
+                if(btnIcon) btnIcon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Intersection Observer for Fade In Animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // --- Multi-step Form Logic ---
+        function nextStep(currentStep) {
+            const currentDiv = document.getElementById(`step-${currentStep}`);
+            const nextDiv = document.getElementById(`step-${currentStep + 1}`);
+            
+            // Simple validation
+            const input = currentDiv.querySelector('input, textarea');
+            if (input && !input.value.trim()) {
+                input.classList.add('border-red-500');
+                setTimeout(() => input.classList.remove('border-red-500'), 1000);
+                return;
+            }
+
+            // Hide current
+            currentDiv.classList.remove('step-active');
+            currentDiv.classList.add('step-hidden');
+
+            // Show next
+            setTimeout(() => {
+                nextDiv.classList.remove('step-hidden');
+                nextDiv.classList.add('step-active');
+            }, 400); // Wait for transition
+        }
+
+        function prevStep(currentStep) {
+            const currentDiv = document.getElementById(`step-${currentStep}`);
+            const prevDiv = document.getElementById(`step-${currentStep - 1}`);
+
+            currentDiv.classList.remove('step-active');
+            currentDiv.classList.add('step-hidden');
+
+            setTimeout(() => {
+                prevDiv.classList.remove('step-hidden');
+                prevDiv.classList.add('step-active');
+            }, 400);
+        }
+
+        function submitForm() {
+             const step3 = document.getElementById('step-3');
+             const successMsg = document.getElementById('success-message');
+             
+             // Check step 3 input
+             const input = step3.querySelector('textarea');
+             if (input && !input.value.trim()) {
+                input.classList.add('border-red-500');
+                setTimeout(() => input.classList.remove('border-red-500'), 1000);
+                return;
+            }
+
+             step3.classList.remove('step-active');
+             step3.classList.add('step-hidden');
+
+             setTimeout(() => {
+                successMsg.classList.remove('step-hidden');
+                successMsg.classList.add('step-active');
+             }, 400);
+        }
+
+        function resetForm() {
+            document.getElementById('missionForm').reset();
+            const successMsg = document.getElementById('success-message');
+            const step1 = document.getElementById('step-1');
+
+            successMsg.classList.remove('step-active');
+            successMsg.classList.add('step-hidden');
+
+            setTimeout(() => {
+                step1.classList.remove('step-hidden');
+                step1.classList.add('step-active');
+            }, 400);
+        }
+
+        // Privacy Modal Logic
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
